@@ -1,0 +1,152 @@
+#!/bin/bash
+
+
+
+
+# ---- definitions ----
+
+#projia path
+PROJIA_PATH=$HOME/.projia
+
+
+
+
+# ---- debug ----
+
+#toggle debug mode (Uncomment to enable debug mode)
+#DEBUG_MODE_ON=1
+
+#check for debug mode (no parameters)
+function ____() {
+	[[ DEBUG_MODE_ON == 1 ]]
+	return $?
+}
+
+
+
+# ---- utilities ----
+
+#get a file from online git server and then move it into specific location
+# (
+#   $1:language folder,
+#   $2:library name,
+#   $3:git server address,
+#   $4:filename inside git repo
+# )
+function update_from_git() {
+
+	#prepare repository place
+	rm -rf $PROJIA_PATH/.git_tmp
+	mkdir  $PROJIA_PATH/.git_tmp
+
+	#take from git
+	echo "Getting library '$2' for language '$1' from '$3'..."
+	git clone $3 $PROJIA_PATH/.git_tmp > /dev/null || {
+		echo "projia/updater: Could not update library '$2' for language '$1'."
+		exit 1
+	}
+
+	#create the library folder (can be not existing)
+	mkdir -p $PROJIA_PATH/$1/lib/$2 2> /dev/null
+
+	#move the concerned file
+	mv $PROJIA_PATH/.git_tmp/$4 $PROJIA_PATH/$1/lib/$2 || {
+		rm -rf $PROJIA_PATH/.git_tmp
+		echo "projia/updater: Could not update library '$2' for language '$1'."
+		exit 1
+	}
+
+	#remove temporary files
+	rm -rf $PROJIA_PATH/.git_tmp
+	echo -e "Done.\n"
+}
+
+#add dependency
+# (
+#   $1:language folder,
+#   $2:library name,
+#   $@:dependencies to set for this lib
+# )
+function set_depend() {
+
+	#create the library folder (can be not existing)
+	mkdir -p $PROJIA_PATH/$1/lib/$2 2> /dev/null
+
+	#create dependency file
+	echo '' > $PROJIA_PATH/$1/lib/$2/.depend
+
+	#for each dependencies given
+	for dep in ${@:3}; do
+		echo $dep >> $PROJIA_PATH/$1/lib/$2/.depend
+	done
+}
+
+
+
+
+
+
+# UPDATE ALL LANGUAGES LIBRARIES
+
+#              +-----+------------+---------------------------------------------+----------------+
+#              |<lng>|   <lib>    |               <git_repo_link>               | <path_in_repo> |
+#              +-----+------------+---------------------------------------------+----------------+
+
+#C
+#bipipes
+update_from_git C     bipipes      https://github.com/iasebsil83/C_bipipes        lib/bipipes.c
+update_from_git C     bipipes      https://github.com/iasebsil83/C_bipipes        lib/bipipes.h
+
+#files
+update_from_git C     files        https://github.com/iasebsil83/C_files          lib/files.c
+update_from_git C     files        https://github.com/iasebsil83/C_files          lib/files.h
+
+#morestrings
+update_from_git C     more_strings https://github.com/iasebsil83/C_moreStrings    lib/more_strings.c
+update_from_git C     more_strings https://github.com/iasebsil83/C_moreStrings    lib/more_strings.h
+
+#png
+update_from_git C     png          https://github.com/iasebsil83/C_PNG            lib/PNG.c
+update_from_git C     png          https://github.com/iasebsil83/C_PNG            lib/PNG.h
+
+#processes
+update_from_git C     processes    https://github.com/iasebsil83/C_processes      lib/processes.c
+update_from_git C     processes    https://github.com/iasebsil83/C_processes      lib/processes.h
+
+#queues
+update_from_git C     queues       https://github.com/iasebsil83/C_queues         lib/queues.c
+update_from_git C     queues       https://github.com/iasebsil83/C_queues         lib/queues.h
+
+#shm
+update_from_git C     shm          https://github.com/iasebsil83/C_shm            lib/shm.c
+update_from_git C     shm          https://github.com/iasebsil83/C_shm            lib/shm.h
+
+#threads
+update_from_git C     threads      https://github.com/iasebsil83/C_threads        lib/threads.c
+update_from_git C     threads      https://github.com/iasebsil83/C_threads        lib/threads.h
+
+#S2DE
+update_from_git C     S2DE         https://github.com/iasebsil83/S2DE             lib/S2DE.c
+update_from_git C     S2DE         https://github.com/iasebsil83/S2DE             lib/S2DE.h
+
+#S3DE
+update_from_git C     S3DE         https://github.com/iasebsil83/S3DE             lib/S3DE.c
+update_from_git C     S3DE         https://github.com/iasebsil83/S3DE             lib/S3DE.h
+
+
+
+#Swift
+#raw pointers
+update_from_git Swift raw_pointer  https://github.com/iasebsil83/Swift_RawPointer lib/raw_pointer.swift
+
+#network
+update_from_git Swift network      https://github.com/iasebsil83/Swift_Network    lib/network.swift
+update_from_git Swift network      https://github.com/iasebsil83/Swift_Network    lib/include_NW.h
+
+#SS2DE
+update_from_git Swift SS2DE        https://github.com/iasebsil83/SS2DE            lib/SS2DE.swift
+update_from_git Swift SS2DE        https://github.com/iasebsil83/SS2DE            lib/include_GL.h
+
+#SS3DE
+update_from_git Swift SS3DE        https://github.com/iasebsil83/SS3DE            lib/SS3DE.swift
+update_from_git Swift SS3DE        https://github.com/iasebsil83/SS3DE            lib/include_GL.h

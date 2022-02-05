@@ -1,0 +1,51 @@
+#!/bin/bash
+
+
+
+################################################
+#               Replace Filename               #
+#                                              #
+# This program is a tool for program 'projia'. #
+# (command of bash_tools)                      #
+#                                              #
+# Bash tools :                                 #
+#     https://github.com/iasebsil83/Bash_Tools #
+#                                              #
+################################################
+
+
+
+# ---- debug ----
+
+#toggle debug mode (Uncomment to enable debug mode)
+#DEBUG_MODE_ON=1
+
+#check for debug mode (no parameters)
+function ____() {
+	[[ DEBUG_MODE_ON == 1 ]]
+	return $?
+}
+
+
+
+# ---- main ----
+
+#replace filename ($1:full filename, $2:string to be replaced, $3:string to set)
+
+#1) remove simple quotes at beginning and end
+src=$2
+dst=${3:1:-1}
+
+#2) set new_filename
+new_filename=$(echo $1 | replaceall -l $src $dst) || {
+	echo "projia/replace_filename: Error in filename replacement."
+	exit 1
+}
+____ && echo "old_filename : $1"
+____ && echo "new_filename : $new_filename"
+
+#3) rename file/folder if necessary
+if [[ $1 != $new_filename ]]; then
+	mv $1 $new_filename
+	____ && echo -e "moved file\n"
+fi

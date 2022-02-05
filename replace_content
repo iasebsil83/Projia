@@ -1,0 +1,105 @@
+#!/bin/bash
+
+
+
+################################################
+#               Replace Content                #
+#                                              #
+# This program is a tool for program 'projia'. #
+# (command of bash_tools)                      #
+#                                              #
+# Bash tools :                                 #
+#     https://github.com/iasebsil83/Bash_Tools #
+#                                              #
+################################################
+
+
+
+# ---- debug ----
+
+#toggle debug mode (Uncomment to enable debug mode)
+#DEBUG_MODE_ON=1
+
+#check for debug mode (no parameters)
+function ____() {
+	[[ DEBUG_MODE_ON == 1 ]]
+	return $?
+}
+
+
+
+# ---- file & directory cases ----
+
+#file ($1:filename, $2:source string, $@:destination strings)
+function replace_content_file() {
+
+	#check void arguments
+	[[ $1 == '' ]] && echo "projia/replace_content: No file given."       && exit 1
+	[[ $2 == '' ]] && echo "projia/replace_content: No src string given." && exit 1
+
+	#check if file can be read
+	input=$(cat $1 2> /dev/null) || {
+		echo "projia/replace_content: File '$1' not accessible."
+		return 1
+	}
+
+	#reset file
+	echo -n '' > $1
+
+	#create destination string
+	dest=''
+	for arg in ${@:3}; do
+		dest+=$arg' '
+	done
+	dest=${dest:1:-2}
+	____ && echo "src  : $2"
+	____ && echo "dest : $dest"
+
+	#replace until no more occurrence found
+	cnt=0
+	content="${input[@]}"
+	while [[ $content == *$2* ]]; do
+		content=${content/$2/"$dest"}
+		cnt=$(($cnt + 1))
+	done
+
+	#write line character per character
+	for c in $(seq 0 ${#content}); do
+		echo -n "${content[$c]}" >> $1
+	done
+	echo '' >> $1
+
+	____ && echo "Replaced $cnt occurrences of '$2' by '$dest' in file '$1'."
+}
+
+#directory ($1:directory, $2:source string, $@:destination strings)
+function replace_content_dir() {
+
+	#check void arguments
+	[[ $1 == '' ]] && echo "projia/replace_content: No directory given."  && exit 1
+	[[ $2 == '' ]] && echo "projia/replace_content: No src string given." && exit 1
+
+	#list files there
+	file_list=$(ls $1 -A 2> /dev/null) || {
+		echo "projia/replace_content: Directory '$1' not found."
+		return 1
+	}
+
+	#for each 'file' in directory
+	for f in ${file_list[@]}; do
+
+		#it's a directory => analyse recursively
+		if [[ -d $1/$f ]]; then
+			replace_content_dir $1/$f ${@:2}
+
+		#it's a file => replace in file
+		elif [[ -f $1/$f ]]; then
+			replace_content_file $1/$f ${@:2}
+		fi
+	done
+}
+
+
+
+# ---- main ----
+replace_content_dir $@
