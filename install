@@ -4,9 +4,7 @@
 
 # Installation program for projia.
 # This program removes itself when installation finished.
-mv Projia $HOME/.projia                                                     && \
-echo -e "\n\n\n# Projia by I.A. :"                >> ~/.bashrc              && \
-echo -e "PATH=\"\$PATH:$HOME/.projia\"\n\n\n" >> ~/.bashrc                  && \
-rm $HOME/.projia/install                                                    && \
-echo "Projia installation done (you can find it in ~/.projia)."             && \
-echo "You will need to restart a terminal to access to this new command."
+mv Projia $HOME/.projia                                                   && \
+ln -s     $HOME/.projia/run $HOME/.bash_tools/projia                      && \
+rm $HOME/.projia/install                                                  && \
+echo "Projia installation done (you can find it in ~/.projia)."

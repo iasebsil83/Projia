@@ -63,7 +63,7 @@ To install projia :
 ```
 
 ### Uninstallation
-To uninstall projia, remove "Projia" section in file ~/.bashrc and then :
+To uninstall projia :
 ```bash
     rm -rf ~/.projia
 ```
