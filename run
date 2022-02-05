@@ -128,11 +128,6 @@ case $1 in
 		echo
 		echo "  > projia --show Swift"
 		echo "  #Shows all the available libraries in Swift."
-		echo
-		echo "This command is part of \"Bash Tools\"."
-		echo "More information about projia in $PROJIA_PATH/README.txt"
-		echo "For more information about \"Bash Tools\", please check :"
-		echo "    https://github.com/iasebsil83/Bash_Tools"
 		[[ -z $1 ]] && exit 1 || exit 0
 	;;
 
