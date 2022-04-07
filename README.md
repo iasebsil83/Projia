@@ -57,9 +57,15 @@ That's all you need.
 
 ### Installation
 To install projia :
-```
+```bash
+    #clone
     git clone https://github.com/iasebsil83/Projia
-    ./Projia/install
+
+    #get inside
+    cd Projia
+
+    #run installer
+    ./install
 ```
 
 ### Uninstallation
