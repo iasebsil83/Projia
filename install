@@ -4,11 +4,21 @@
 
 # Installation program for projia.
 # This program removes itself when it finishes.
+
+#create folder (check if already installed)
+mkdir $HOME/.projia || {
+	echo "projia: Folder '.projia' already exists."
+	echo "        [Installation aborted]"
+	exit 1
+}
+
+#install
 mv *  $HOME/.projia                                             && \
 ln -s $HOME/.projia/run     $HOME/.bash_tools/projia            && \
 rm    $HOME/.projia/install                                     && \
 echo "Projia installation done (you can find it in ~/.projia)." || {
 	echo "projia: Unable to install projia."
 	echo "        Are you executing this installer in its own directory ?"
+	echo "        [Installation Aborted]"
 	exit 1
 }
